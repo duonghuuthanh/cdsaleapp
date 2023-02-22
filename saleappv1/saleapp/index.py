@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import render_template
 
-app = Flask(__name__)
+from saleapp import app
 
 
 @app.route("/")
@@ -68,6 +68,20 @@ def index():
     }]
 
     return render_template("index.html", categories=categories, products=products)
+
+
+@app.route("/products/<int:product_id>")
+def details(product_id):
+    product = {
+        "id": 1,
+        "name": "iPhone 7 Plus",
+        "description": "Apple, 32GB, RAM: 3GB, iOS13",
+        "price": 17000000,
+        "image": "https://res.cloudinary.com/dxxwcby8l/image/upload/v1647056401/ipmsmnxjydrhpo21xrd8.jpg",
+        "category_id": 1
+    }
+
+    return render_template("details.html", product=product)
 
 
 if __name__ == '__main__':
