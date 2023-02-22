@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center text-success">CHI TIẾT SẢN PHẨM</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+           <img class="card-img-top" src="{{ product.image }}" alt="{{ product.name }}<">
+        </div>
+        <div class="col-md-8">
+            <h1>{{ product.name }}</h1>
+            <p>{{ product.description }}</p>
+            <h3 class="text-danger">{{ product.price }} VNĐ</h3>
+        </div>
+    </div>
+</div>
+{% endblock %}
