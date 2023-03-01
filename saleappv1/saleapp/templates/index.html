@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container">
+    {% if products %}
     <div class="row">
         {% for p in products %}
         <div class="col-md-3" style="padding:1rem;">
@@ -17,5 +18,10 @@
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <p class="alert alert-info mt-2">KHÔNG có sản phẩm nào!!!</p>
+    {% endif %}
+
+
 </div>
 {% endblock %}
