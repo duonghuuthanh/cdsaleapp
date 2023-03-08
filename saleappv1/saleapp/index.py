@@ -1,5 +1,7 @@
-from flask import render_template, request
+from flask import render_template, request, redirect
 from saleapp import app, dao, admin
+from saleapp import login
+from flask_login import login_user, logout_user
 
 
 @app.route("/")
@@ -13,17 +15,37 @@ def index():
 
 @app.route("/products/<int:product_id>")
 def details(product_id):
-    # product = {
-    #     "id": 1,
-    #     "name": "iPhone 7 Plus",
-    #     "description": "Apple, 32GB, RAM: 3GB, iOS13",
-    #     "price": 17000000,
-    #     "image": "https://res.cloudinary.com/dxxwcby8l/image/upload/v1647056401/ipmsmnxjydrhpo21xrd8.jpg",
-    #     "category_id": 1
-    # }
     product = dao.get_product_by_id(product_id)
 
     return render_template("details.html", product=product)
+
+
+@app.route('/login')
+def my_login():
+    return render_template('login.html')
+
+
+@app.route("/login", methods=['post'])
+def my_login_process():
+    username = request.form['username']
+    password = request.form['password']
+    u = dao.auth_user(username, password)
+    if u:
+        login_user(user=u)
+        return redirect('/')
+
+    return render_template('login.html')
+
+
+@app.route("/logout")
+def my_logout():
+    logout_user()
+    return redirect("/login")
+
+
+@app.route("/register")
+def my_register():
+    return render_template('register.html')
 
 
 @app.context_processor
@@ -31,6 +53,11 @@ def common_attr():
     return {
         'categories': dao.get_categories()
     }
+
+
+@login.user_loader
+def get_user(user_id):
+    return dao.get_user_by_id(user_id)
 
 
 if __name__ == '__main__':

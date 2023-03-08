@@ -1,6 +1,6 @@
-from flask import render_template, request
-from saleapp.models import Category
-from saleapp import app, admin, dao
+from flask import render_template, request, redirect
+from saleapp import app, admin, dao, login
+from flask_login import login_user, logout_user
 
 
 @app.route("/")
@@ -18,11 +18,44 @@ def details(product_id):
     return render_template('details.html', product=product)
 
 
+@app.route("/login")
+def my_login():
+    return render_template("login.html")
+
+
+@app.route("/login", methods=['post'])
+def login_process():
+    username = request.form['username']
+    password = request.form['password']
+    u = dao.auth_user(username, password)
+    if u:
+        login_user(u)
+        return redirect("/")
+
+    return render_template("login.html")
+
+
+@app.route('/logout')
+def my_logout():
+    logout_user()
+    return redirect("/login")
+
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+
 @app.context_processor
 def common_attr():
     return {
         'categories': dao.get_categories()
     }
+
+
+@login.user_loader
+def load_user(user_id):
+    return dao.get_user_by_id(user_id)
 
 
 if __name__ == '__main__':
