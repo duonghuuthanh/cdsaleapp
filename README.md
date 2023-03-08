@@ -7,5 +7,4 @@
   <li>Chạy tập tin index.py và truy cập http://127.0.0.1:5000/</li>
 </ol>
 <hr>
-<p><strong>Tham khảo thêm</strong></p>
-<div>[![Chạy project Flask từ Github](https://img.youtube.com/vi/OXWbJ6d9TYc/0.jpg)](https://www.youtube.com/watch?v=OXWbJ6d9TYc)</div>
+<p><strong>Tham khảo thêm</strong>: https://www.youtube.com/watch?v=OXWbJ6d9TYc</p>
