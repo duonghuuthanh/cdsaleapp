@@ -8,4 +8,4 @@
 </ol>
 <hr>
 <p><strong>Tham khảo thêm</strong></p>
-<div><iframe width="50%" height="315" src="https://www.youtube.com/embed/OXWbJ6d9TYc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+<div>[![Chạy project Flask từ Github](https://img.youtube.com/vi/OXWbJ6d9TYc/0.jpg)](https://www.youtube.com/watch?v=OXWbJ6d9TYc)</div>
