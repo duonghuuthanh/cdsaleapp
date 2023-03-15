@@ -2,22 +2,31 @@
 
 {% block content %}
 <h1 class="text-center text-primary">ĐĂNG KÝ NGƯỜI DÙNG</h1>
-<form action="/register" method="post">
+{% if msg %}
+<div class="alert alert-danger">
+  {{ msg }}
+</div>
+{% endif %}
+<form action="/register" method="post" enctype="multipart/form-data">
   <div class="mb-3 mt-3">
     <label for="name" class="form-label">Họ tên:</label>
-    <input type="text" class="form-control" id="name" placeholder="Họ tên" name="name">
+    <input type="text" class="form-control" id="name"
+           placeholder="Họ tên" name="name">
   </div>
   <div class="mb-3 mt-3">
     <label for="username" class="form-label">Tên đăng nhập:</label>
-    <input type="text" class="form-control" id="username" placeholder="Tên đăng nhập" name="username">
+    <input type="text" class="form-control" id="username"
+           placeholder="Tên đăng nhập" name="username">
   </div>
   <div class="mb-3">
     <label for="pwd" class="form-label">Mật khẩu:</label>
-    <input type="password" class="form-control" id="pwd" placeholder="Mật khẩu" name="password">
+    <input type="password" class="form-control" id="pwd"
+           placeholder="Mật khẩu" name="password">
   </div>
   <div class="mb-3">
     <label for="confirm" class="form-label">Xác nhận mật khẩu:</label>
-    <input type="password" class="form-control" id="confirm" placeholder="Xác nhận mật khẩu" name="confirm">
+    <input type="password" class="form-control" id="confirm"
+           placeholder="Xác nhận mật khẩu" name="confirm">
   </div>
   <div class="mb-3 mt-3">
     <label for="avatar" class="form-label">Ảnh đại diện:</label>

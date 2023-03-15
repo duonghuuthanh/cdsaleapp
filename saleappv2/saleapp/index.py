@@ -1,6 +1,7 @@
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session
 from saleapp import app, admin, dao, login
 from flask_login import login_user, logout_user
+import cloudinary.uploader
 
 
 @app.route("/")
@@ -44,6 +45,56 @@ def my_logout():
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+
+@app.route('/register', methods=['post'])
+def register_process():
+    data = request.form
+    password = data['password']
+    confirm = data['confirm']
+    if password.__eq__(confirm):
+        username = data['username']
+        name = data['name']
+        try:
+            res = cloudinary.uploader.upload(request.files['avatar'])
+            dao.add_user(username=username, password=password, name=name, avatar=res['secure_url'])
+            return redirect('/login')
+        except Exception as ex:
+            err = str(ex)
+    else:
+        err = 'Password does not match!!!'
+
+    return render_template('register.html', err=err)
+
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+
+@app.route('/order/<int:product_id>')
+def order_item(product_id):
+    p = dao.get_product_by_id(product_id)
+
+    cart = {}
+    if 'cart' in session:
+        cart = session['cart']
+
+    product_id = str(product_id)
+
+    if product_id in cart:
+        cart[product_id]['quantity'] = cart[product_id]['quantity'] + 1
+    else:
+        cart[product_id] = {
+            "id": p.id,
+            "name": p.name,
+            "price": p.price,
+            "quantity": 1
+        }
+
+    session['cart'] = cart
+
+    return redirect('/cart')
 
 
 @app.context_processor

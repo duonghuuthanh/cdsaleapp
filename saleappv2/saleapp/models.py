@@ -34,10 +34,13 @@ if __name__ == '__main__':
 
         import hashlib
 
-        u = User(name="ADMIN", username="admin", password=str(hashlib.md5("123456".encode('utf-8')).hexdigest()),
-                 avatar="https://res.cloudinary.com/dxxwcby8l/image/upload/v1647056401/ipmsmnxjydrhpo21xrd8.jpg")
-        db.session.add(u)
+        u1 = User(username='admin', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Le Duong',
+                  avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
+        u2 = User(username='thanh', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Minh Nguyen',
+                  avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
+        db.session.add_all([u1, u2])
         db.session.commit()
+
         # c1 = Category(name='Điện thoại di động')
         # c2 = Category(name='Máy tính bảng')
         # db.session.add_all([c1, c2])
