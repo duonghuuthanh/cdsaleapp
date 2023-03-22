@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Integer, Float, ForeignKey, Text
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Text, DateTime
 from sqlalchemy.orm import relationship
 from saleapp import db, app
 from flask_login import UserMixin
+from datetime import datetime
 
 
 class User(db.Model, UserMixin):
@@ -26,20 +27,27 @@ class Product(db.Model):
     price = Column(Float, default=0)
     image = Column(String(100))
     category_id = Column(Integer, ForeignKey(Category.id))
+    receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
+
+
+class Receipt(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    created_date = Column(DateTime, default=datetime.now())
+    user_id = Column(Integer, ForeignKey(User.id))
+    details = relationship('ReceiptDetails', backref='receipt', lazy=True)
+
+
+class ReceiptDetails(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    quantity = Column(Integer, default=0)
+    unit_price = Column(Float, default=0)
+    receipt_id = Column(Integer, ForeignKey(Receipt.id))
+    product_id = Column(Integer, ForeignKey(Product.id))
 
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-
-        import hashlib
-
-        u1 = User(username='admin', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Le Duong',
-                  avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
-        u2 = User(username='thanh', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Minh Nguyen',
-                  avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
-        db.session.add_all([u1, u2])
-        db.session.commit()
 
         # c1 = Category(name='Điện thoại di động')
         # c2 = Category(name='Máy tính bảng')

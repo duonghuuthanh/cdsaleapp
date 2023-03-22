@@ -1,0 +1,62 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<h1 class="text-center text-success">THỐNG KÊ DOANH THU</h1>
+
+<div class="row">
+    <div class="col-md-5">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Tên sản phẩm</th>
+                <th>Doanh thu</th>
+            </tr>
+            {% for d in data %}
+            <tr>
+                <td>{{ d[0] }}</td>
+                <td>{{ d[1] }}</td>
+                <td>{% if d[2] %} {{ d[2] }} {% else %}0{% endif %} VNĐ</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let data = [], labels = []
+    {% for d in data %}
+        {% if d[2] %}
+        labels.push('{{ d[1] }}')
+        data.push({{ d[2] }})
+        {% endif %}
+    {% endfor %}
+
+    window.onload = function() {
+          const ctx = document.getElementById('myChart');
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Doanh thu',
+                data: data,
+                borderWidth: 1,
+                backgroundColor: ['red', 'green', 'blue', 'gold', 'brown', 'orange']
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+    }
+</script>
+{% endblock %}

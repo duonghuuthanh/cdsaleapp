@@ -28,7 +28,9 @@
 </table>
 
 <div>
-    <input type="button" value="Thanh toán" class="btn btn-success" />
+    <form method="post" action="/pay">
+        <input type="submit" value="Thanh toán" class="btn btn-success" />
+    </form>
 </div>
 {% else %}
 <div class="alert alert-info">

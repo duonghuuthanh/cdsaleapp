@@ -1,5 +1,7 @@
-from saleapp.models import Category, Product, User
-from saleapp import db
+from saleapp.models import Category, Product, User, Receipt, ReceiptDetails
+from saleapp import db, app
+from flask_login import current_user
+from sqlalchemy import func
 import hashlib
 
 
@@ -38,4 +40,32 @@ def add_user(username, password, name, avatar):
     u = User(name=name, username=username, password=password, avatar=avatar)
     db.session.add(u)
     db.session.commit()
+
+
+def add_receipt(cart):
+    if cart:
+        r = Receipt(user_id=current_user.id)
+        db.session.add(r)
+
+        for p in cart.values():
+            d = ReceiptDetails(receipt=r,
+                               product_id=p['id'],
+                               quantity=p['quantity'],
+                               unit_price=p['price'])
+            db.session.add(d)
+
+        db.session.commit()
+
+
+def revenue_by_product():
+    return db.session.query(Product.id, Product.name,
+                            func.sum(ReceiptDetails.unit_price * ReceiptDetails.quantity))\
+                     .join(ReceiptDetails, ReceiptDetails.product_id.__eq__(Product.id), isouter=True)\
+                     .group_by(Product.id).all()
+
+
+if __name__ == '__main__':
+    with app.app_context():
+        print(revenue_by_product())
+
 

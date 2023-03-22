@@ -97,6 +97,16 @@ def order_item(product_id):
     return redirect('/cart')
 
 
+@app.route('/pay', methods=['post'])
+def pay():
+    if 'cart' in session:
+        cart = session['cart']
+        dao.add_receipt(cart)
+        del session['cart']
+
+    return redirect('/cart')
+
+
 @app.context_processor
 def common_attr():
     return {
