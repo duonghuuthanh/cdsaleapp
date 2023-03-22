@@ -29,13 +29,13 @@
 </table>
 
 <div>
-    <input type="button" value="Thanh toán" class="btn btn-success" />
+    <form method="post" action="/pay">
+        <input type="submit" value="Thanh toán" class="btn btn-success" />
+    </form>
 </div>
 {% else %}
     <div class="alert alert-info">
         <h4>KHÔNG CÓ SẢN PHẨM NÀO TRONG GIỎ!!!</h4>
     </div>
 {% endif %}
-
-
 {% endblock %}

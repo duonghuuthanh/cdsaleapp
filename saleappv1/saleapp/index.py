@@ -114,6 +114,17 @@ def cart():
     return render_template('cart.html')
 
 
+@app.route('/pay', methods=['post'])
+def pay():
+    cart = session.get('cart')
+    if cart:
+        dao.add_receipt(cart)
+
+        del session['cart']
+
+    return redirect("/cart")
+
+
 @app.context_processor
 def common_attr():
     return {
