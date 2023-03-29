@@ -4,6 +4,28 @@
 <h1 class="text-center text-success">THỐNG KÊ DOANH THU</h1>
 
 <div class="row">
+    <div class="col-md-7">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Tên danh mục</th>
+                <th>Số lượng sản phẩm</th>
+            </tr>
+            {% for d in cates %}
+            <tr>
+                <td>{{ d[0] }}</td>
+                <td>{{ d[1] }}</td>
+                <td>{% if d[2] %} {{ d[2] }} {% else %}0{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-5">
+        <canvas id="myCateChart"></canvas>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-5">
         <table class="table">
             <tr>
@@ -28,6 +50,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let data = [], labels = []
+    let data2 = [], labels2 = []
     {% for d in data %}
         {% if d[2] %}
         labels.push('{{ d[1] }}')
@@ -35,7 +58,15 @@
         {% endif %}
     {% endfor %}
 
+     {% for d in cates %}
+        {% if d[2] %}
+        labels2.push('{{ d[1] }}')
+        data2.push({{ d[2] }})
+        {% endif %}
+    {% endfor %}
+
     window.onload = function() {
+        // Thống kê doanh thu
           const ctx = document.getElementById('myChart');
 
           new Chart(ctx, {
@@ -45,6 +76,29 @@
               datasets: [{
                 label: 'Doanh thu',
                 data: data,
+                borderWidth: 1,
+                backgroundColor: ['red', 'green', 'blue', 'gold', 'brown', 'orange']
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+
+        // Thống kê số lượng theo danh mục
+        const ctx2 = document.getElementById('myCateChart');
+
+          new Chart(ctx2, {
+            type: 'pie',
+            data: {
+              labels: labels2,
+              datasets: [{
+                label: 'Số lượng',
+                data: data2,
                 borderWidth: 1,
                 backgroundColor: ['red', 'green', 'blue', 'gold', 'brown', 'orange']
               }]

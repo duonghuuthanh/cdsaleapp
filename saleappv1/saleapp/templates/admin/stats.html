@@ -2,6 +2,29 @@
 
 {% block body %}
     <h1 class="text-center text-success">THỐNG KÊ DOANH THU</h1>
+
+    <div class="row">
+        <div class="col-md-7">
+            <table class="table">
+                <tr>
+                    <th>Id</th>
+                    <th>Tên danh mục</th>
+                    <th>Số lượng sản phẩm</th>
+                </tr>
+                {% for s in cates %}
+                <tr>
+                    <td>{{s[0]}}</td>
+                    <td>{{s[1]}}</td>
+                    <td>{% if s[2] %}{{s[2]}}{% else %}0{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-md-5">
+            <canvas id="myCateChart"></canvas>
+        </div>
+    </div>
+    <hr />
     <div class="row">
         <div class="col-md-5">
             <table class="table">
@@ -27,6 +50,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   let data = [], labels = [];
+  let data2 = [], labels2 = [];
   {% for s in data %}
     {% if s[2] %}
     data.push({{s[2]}})
@@ -34,7 +58,15 @@
     {% endif %}
   {% endfor %}
 
+  {% for s in cates %}
+    {% if s[2] %}
+    data2.push({{s[2]}})
+    labels2.push('{{s[1]}}')
+    {% endif %}
+  {% endfor %}
+
   window.onload = function() {
+      // Vẽ biểu đồ doanh thu
       const ctx = document.getElementById('myChart');
 
       new Chart(ctx, {
@@ -44,6 +76,29 @@
           datasets: [{
             label: 'Doanh thu',
             data: data,
+            borderWidth: 1,
+            backgroundColor: ['red', 'green', 'blue', 'gold', 'brown']
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      // Vẽ biễu đồ danh mục
+      const ctx2 = document.getElementById('myCateChart');
+
+      new Chart(ctx2, {
+        type: 'pie',
+        data: {
+          labels: labels2,
+          datasets: [{
+            label: 'Số lượng',
+            data: data2,
             borderWidth: 1,
             backgroundColor: ['red', 'green', 'blue', 'gold', 'brown']
           }]

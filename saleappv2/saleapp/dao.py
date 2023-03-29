@@ -64,6 +64,12 @@ def revenue_by_product():
                      .group_by(Product.id).all()
 
 
+def count_product_by_cate():
+    return db.session.query(Category.id, Category.name, func.count(Product.id))\
+             .join(Product, Product.category_id.__eq__(Category.id), isouter=True)\
+             .group_by(Category.id).all()
+
+
 if __name__ == '__main__':
     with app.app_context():
         print(revenue_by_product())

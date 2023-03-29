@@ -18,23 +18,46 @@
         <td>{{ p.name }}</td>
         <td>{{ p.price }} VNĐ</td>
         <td>
-            <input type="number" value="{{ p.quantity }}" class="form-control" />
+            <input type="number" onblur="updateItem({{ p.id }}, this)" value="{{ p.quantity }}" class="form-control" />
         </td>
         <td>
-            <input type="button" value="Xóa" class="btn btn-danger" />
+            <form method="post" action="/cart/{{ p.id }}">
+                <input type="submit" value="Xóa" class="btn btn-danger" />
+            </form>
         </td>
     </tr>
     {% endfor %}
 </table>
 
+{% if current_user.is_authenticated %}
 <div>
     <form method="post" action="/pay">
         <input type="submit" value="Thanh toán" class="btn btn-success" />
     </form>
 </div>
 {% else %}
+<p>Vui lòng <a href="/login?next=/cart">đăng nhập</a> để thanh toán!</p>
+{% endif %}
+
+{% else %}
 <div class="alert alert-info">
     Không có sản phẩm nào trong giỏ!!!
 </div>
 {% endif %}
+
+<script>
+    function updateItem(id, obj) {
+        fetch("/cart/" + id, {
+            method: "put",
+            body: JSON.stringify({
+                "quantity": obj.value
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function(res) {
+            location.reload()
+        })
+    }
+</script>
 {% endblock %}

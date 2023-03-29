@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, Response
 from saleapp import app, dao, admin
 from saleapp import login
 from flask_login import login_user, logout_user
@@ -33,7 +33,9 @@ def my_login_process():
     u = dao.auth_user(username, password)
     if u:
         login_user(user=u)
-        return redirect('/')
+
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else '/')
 
     return render_template('login.html')
 
@@ -55,7 +57,6 @@ def my_register_process():
     password = data['password']
     confirm = data['confirm']
 
-    msg = ''
     if password.__eq__(confirm):
         name = data['name']
         username = data['username']
@@ -92,6 +93,26 @@ def order_item(product_id):
         }
 
     session['cart'] = cart
+
+    return redirect('/cart')
+
+
+@app.route('/cart/<product_id>', methods=['post'])
+def delete_cart_item(product_id):
+    cart = session.get('cart')
+    if cart and product_id in cart:
+        del cart[product_id]
+        session['cart'] = cart
+
+    return redirect('/cart')
+
+
+@app.route('/cart/<product_id>', methods=['put'])
+def update_cart_item(product_id):
+    cart = session.get('cart')
+    if cart and product_id in cart:
+        cart[product_id]['quantity'] = int(request.json['quantity'])
+        session['cart'] = cart
 
     return redirect('/cart')
 

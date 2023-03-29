@@ -31,7 +31,9 @@ def login_process():
     u = dao.auth_user(username, password)
     if u:
         login_user(u)
-        return redirect("/")
+
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else "/")
 
     return render_template("login.html")
 
@@ -70,6 +72,26 @@ def register_process():
 @app.route('/cart')
 def cart():
     return render_template('cart.html')
+
+
+@app.route('/cart/<product_id>', methods=['post'])
+def delete_cart_item(product_id):
+    cart = session.get('cart')
+    if cart and product_id in cart:
+        del cart[product_id]
+        session['cart'] = cart
+
+    return redirect('/cart')
+
+
+@app.route('/cart/<product_id>', methods=['put'])
+def update_cart_item(product_id):
+    cart = session.get('cart')
+    if cart and product_id in cart:
+        cart[product_id]['quantity'] = int(request.json['quantity'])
+        session['cart'] = cart
+
+    return redirect('/cart')
 
 
 @app.route('/order/<int:product_id>')
