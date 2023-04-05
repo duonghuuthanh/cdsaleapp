@@ -1,4 +1,4 @@
-from saleapp.models import Category, Product, User, Receipt, ReceiptDetails
+from saleapp.models import Category, Product, User, Receipt, ReceiptDetails, Comment
 from saleapp import db, app
 from flask_login import current_user
 from sqlalchemy import func
@@ -59,7 +59,8 @@ def add_receipt(cart):
 
 
 def revenue_by_product():
-    return db.session.query(Product.id, Product.name, func.sum(ReceiptDetails.unit_price*ReceiptDetails.quantity))\
+    return db.session.query(Product.id, Product.name,
+                            func.sum(ReceiptDetails.unit_price*ReceiptDetails.quantity))\
              .join(ReceiptDetails, ReceiptDetails.product_id.__eq__(Product.id), isouter=True)\
              .group_by(Product.id).all()
 
@@ -68,6 +69,18 @@ def count_products_by_cate():
     return db.session.query(Category.id, Category.name, func.count(Product.id))\
              .join(Product, Product.category_id.__eq__(Category.id), isouter=True)\
              .group_by(Category.id).all()
+
+
+def get_comments_by_prod_id(prod_id):
+    return Comment.query.filter(Comment.product_id.__eq__(prod_id)).order_by(-Comment.id).all()
+
+
+def add_comment(content, product_id):
+    from datetime import datetime
+    c = Comment(content=content, product_id=product_id,
+                user=current_user, created_date=datetime.now())
+    db.session.add(c)
+    db.session.commit()
 
 
 if __name__ == '__main__':

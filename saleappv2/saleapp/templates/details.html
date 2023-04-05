@@ -15,4 +15,39 @@
         </div>
     </div>
 </div>
+<hr />
+{% if current_user.is_authenticated %}
+<div class="m-1">
+    <form method="post" action="/products/{{ product.id }}/comments">
+        <textarea class="form-control" rows="3" id="comment" placeholder="Nội dung bình luận..." name="content"></textarea>
+        <button class="btn btn-success mt-1">Bình luận</button>
+    </form>
+</div>
+{% else %}
+<p>Vui lòng <a href="/login?next=/products/{{ product.id }}">đăng nhập</a> để thanh toán!</p>
+{% endif %}
+<hr />
+<div>
+    {% for c in comments %}
+    <div class="row bg-light m-1 p-2">
+        <div class="col-md-1">
+            <img src="{{ c.user.avatar }}" class="img-fluid rounded-circle" />
+        </div>
+        <div class="col-md-11">
+            <p>{{ c.content }}</p>
+            <small>Được bình luận bởi <a href="#">{{ c.user.username }}</a> vào <span class="created-date">{{ c.created_date }}</span></small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
+<script>
+    window.onload = function() {
+        let dates = document.getElementsByClassName('created-date')
+        for (let d of dates)
+            d.innerText = moment(d.innerText).locale("vi").fromNow();
+    }
+</script>
 {% endblock %}

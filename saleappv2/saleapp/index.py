@@ -16,7 +16,16 @@ def index():
 @app.route("/products/<int:product_id>")
 def details(product_id):
     product = dao.get_product_by_id(product_id)
-    return render_template('details.html', product=product)
+    comments = dao.load_comments(product_id)
+    return render_template('details.html', product=product, comments=comments)
+
+
+@app.route("/products/<int:product_id>/comments", methods=['post'])
+def add_comment(product_id):
+    content = request.form['content']
+    dao.add_comment(content=content, product_id=product_id)
+
+    return redirect("/products/%d" % product_id)
 
 
 @app.route("/login")

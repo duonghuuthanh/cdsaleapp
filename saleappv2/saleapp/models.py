@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     password = Column(String(50), nullable=False)
     avatar = Column(String(100))
     user_role = Column(String(20), default='USER')
+    comments = relationship('Comment', backref='user', lazy=True)
 
 
 class Category(db.Model):
@@ -28,6 +29,7 @@ class Product(db.Model):
     image = Column(String(100))
     category_id = Column(Integer, ForeignKey(Category.id))
     receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
+    comments = relationship('Comment', backref='product', lazy=True)
 
 
 class Receipt(db.Model):
@@ -45,19 +47,27 @@ class ReceiptDetails(db.Model):
     product_id = Column(Integer, ForeignKey(Product.id))
 
 
+class Comment(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    content = Column(String(255), nullable=False)
+    created_date = Column(DateTime)
+    product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-        import hashlib
-
-        u1 = User(username='admin', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Le Duong',
-                  avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
-        u2 = User(username='thanh', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Minh Nguyen',
-                  avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
-        db.session.add_all([u1, u2])
-        db.session.commit()
-
+        # import hashlib
+        #
+        # u1 = User(username='admin', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Le Duong',
+        #           avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
+        # u2 = User(username='thanh', password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()), name='Minh Nguyen',
+        #           avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1670424381/eukjxogflweriqo6jg8k.png')
+        # db.session.add_all([u1, u2])
+        # db.session.commit()
+        #
         # c1 = Category(name='Điện thoại di động')
         # c2 = Category(name='Máy tính bảng')
         # db.session.add_all([c1, c2])

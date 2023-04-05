@@ -1,8 +1,9 @@
-from saleapp.models import Category, Product, User, Receipt, ReceiptDetails
+from saleapp.models import Category, Product, User, Receipt, ReceiptDetails, Comment
 from saleapp import db, app
 from flask_login import current_user
 from sqlalchemy import func
 import hashlib
+from datetime import datetime
 
 
 def get_categories():
@@ -68,6 +69,16 @@ def count_product_by_cate():
     return db.session.query(Category.id, Category.name, func.count(Product.id))\
              .join(Product, Product.category_id.__eq__(Category.id), isouter=True)\
              .group_by(Category.id).all()
+
+
+def load_comments(product_id):
+    return Comment.query.filter(Comment.product_id.__eq__(product_id)).order_by(-Comment.id).all()
+
+
+def add_comment(content, product_id):
+    c = Comment(content=content, product_id=product_id, user=current_user, created_date=datetime.now())
+    db.session.add(c)
+    db.session.commit()
 
 
 if __name__ == '__main__':
